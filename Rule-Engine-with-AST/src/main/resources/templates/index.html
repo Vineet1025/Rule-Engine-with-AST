@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule Engine with AST</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        #ruleList {
+            margin-top: 20px;
+        }
+
+        .rule-item {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        #evaluationResult {
+            font-weight: bold;
+            color: green;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Rule Engine with AST</h1>
+</header>
+
+<main>
+    <h1>Create and Evaluate Rules</h1>
+
+    <!-- Create Rule Form -->
+    <div class="form-section">
+        <form th:action="@{/rules/create}" method="post">
+            <label for="ruleInput">Enter Rule:</label>
+            <input type="text" id="ruleInput" name="ruleString" placeholder="e.g., (age > 30 AND department = 'Sales') OR (salary > 50000)" />
+
+            <button type="submit">Create Rule</button>
+        </form>
+    </div>
+
+    <!-- Rule List Display -->
+    <div class="form-section">
+        <h2>Existing Rules:</h2>
+        <div id="ruleList">
+            <div th:each="rule : ${rules}" class="rule-item">
+                <strong th:text="'Rule ' + ${rule.id} + ': '"></strong>
+                <span th:text="${rule.ruleString}"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Evaluate Rule Form -->
+    <div class="form-section">
+        <h2>Evaluate Rule with User Data:</h2>
+        <form th:action="@{/rules/evaluate}" method="post">
+            <label for="ageInput">Age:</label>
+            <input type="number" id="ageInput" name="age" placeholder="Enter age" />
+
+            <label for="departmentInput">Department:</label>
+            <input type="text" id="departmentInput" name="department" placeholder="Enter department" />
+
+            <label for="salaryInput">Salary:</label>
+            <input type="number" id="salaryInput" name="salary" placeholder="Enter salary" />
+
+            <label for="experienceInput">Experience (years):</label>
+            <input type="number" id="experienceInput" name="experience" placeholder="Enter experience in years" />
+
+            <button type="submit">Evaluate Rule</button>
+        </form>
+
+        <div id="evaluationResult" th:if="${evaluationResult != null}">
+            <span th:text="${evaluationResult}"></span>
+        </div>
+    </div>
+</main>
+</body>
+</html>
