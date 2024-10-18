@@ -1,12 +1,15 @@
 package com.ruleEngineWithAST.model;
 
+
+
 public class UserData {
+
     private int age;
     private String department;
     private int salary;
     private int experience;
 
-    // Constructor
+    // Constructors
     public UserData(int age, String department, int salary, int experience) {
         this.age = age;
         this.department = department;
@@ -45,15 +48,5 @@ public class UserData {
 
     public void setExperience(int experience) {
         this.experience = experience;
-    }
-
-    @Override
-    public String toString() {
-        return "UserData{" +
-                "age=" + age +
-                ", department='" + department + '\'' +
-                ", salary=" + salary +
-                ", experience=" + experience +
-                '}';
     }
 }

@@ -30,7 +30,7 @@
 
         h1 {
             text-align: center;
-            color: #333;
+            color: #f7f0f0;
         }
 
         label {
@@ -89,56 +89,58 @@
 </head>
 <body>
 <header>
-    <h1>Rule Engine with AST</h1>
+    <h1>Rule Engine</h1>
 </header>
 
 <main>
-    <h1>Create and Evaluate Rules</h1>
+    <h2>Create Rule</h2>
 
     <!-- Create Rule Form -->
     <div class="form-section">
-        <form th:action="@{/rules/create}" method="post">
+        <form th:action="@{/api/rule/create}" method="post">
             <label for="ruleInput">Enter Rule:</label>
-            <input type="text" id="ruleInput" name="ruleString" placeholder="e.g., (age > 30 AND department = 'Sales') OR (salary > 50000)" />
-
+            <input type="text" id="ruleInput" name="rule" placeholder="e.g., (age > 30 AND department = 'Sales') OR (salary > 50000)" required />
             <button type="submit">Create Rule</button>
         </form>
+
     </div>
 
     <!-- Rule List Display -->
     <div class="form-section">
         <h2>Existing Rules:</h2>
-        <div id="ruleList">
-            <div th:each="rule : ${rules}" class="rule-item">
-                <strong th:text="'Rule ' + ${rule.id} + ': '"></strong>
-                <span th:text="${rule.ruleString}"></span>
+        <div id="ruleList" th:each="rule : ${rules}">
+            <div class="rule-item">
+                <strong>Rule:</strong> <span th:text="${rule}"></span>
             </div>
         </div>
     </div>
 
+
     <!-- Evaluate Rule Form -->
     <div class="form-section">
         <h2>Evaluate Rule with User Data:</h2>
-        <form th:action="@{/rules/evaluate}" method="post">
+
+        <form th:action="@{/api/rule/evaluate}" method="post">
             <label for="ageInput">Age:</label>
-            <input type="number" id="ageInput" name="age" placeholder="Enter age" />
+            <input type="number" id="ageInput" name="age" placeholder="Enter age" required />
 
             <label for="departmentInput">Department:</label>
-            <input type="text" id="departmentInput" name="department" placeholder="Enter department" />
+            <input type="text" id="departmentInput" name="department" placeholder="Enter department" required />
 
             <label for="salaryInput">Salary:</label>
-            <input type="number" id="salaryInput" name="salary" placeholder="Enter salary" />
+            <input type="number" id="salaryInput" name="salary" placeholder="Enter salary" required />
 
             <label for="experienceInput">Experience (years):</label>
-            <input type="number" id="experienceInput" name="experience" placeholder="Enter experience in years" />
+            <input type="number" id="experienceInput" name="experience" placeholder="Enter experience in years" required />
 
             <button type="submit">Evaluate Rule</button>
         </form>
 
-        <div id="evaluationResult" th:if="${evaluationResult != null}">
+        <div id="evaluationResult" th:if="${evaluationResult}">
             <span th:text="${evaluationResult}"></span>
         </div>
     </div>
+
 </main>
 </body>
 </html>
