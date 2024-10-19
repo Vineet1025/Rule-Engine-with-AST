@@ -36,6 +36,10 @@ public class ASTService {
         return ruleRepository.findAll();
     }
 
+    public void deleteRuleById(Long id) {
+        ruleRepository.deleteById(id);
+    }
+
     public boolean evaluateRule(int age, String department, int salary, int experience) {
         List<Rule> rules = getAllRules();
         UserData userData = new UserData(age, department, salary, experience);
@@ -56,4 +60,6 @@ public class ASTService {
 
         return allEligible;
     }
+
+
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/api/rule")
@@ -32,20 +33,20 @@ public class RuleController {
 
         // Validate the rule format
         if (ruleString.isEmpty()) {
-            model.addAttribute("errorMessage", "Rule string cannot be empty.");
+            model.addAttribute("errorMessage", "Rule Cannot Be Empty!");
             model.addAttribute("rules", astService.getAllRules());
             return "index";
         }
 
         if (!ruleValidationService.isValidRuleFormat(ruleString)) {
-            model.addAttribute("errorMessage", "Invalid rule format! Ensure the rule is enclosed with '(' and ')'.");
+            model.addAttribute("errorMessage", "Invalid Rule Format! Ensure the rule is enclosed with '(' and ')'.");
             model.addAttribute("rules", astService.getAllRules());
             return "index";
         }
 
         // Check if rule already exists
         if (ruleValidationService.ruleExists(ruleString)) {
-            model.addAttribute("errorMessage", "Rule already exists!");
+            model.addAttribute("errorMessage", "Rule Already Exists!");
             model.addAttribute("rules", astService.getAllRules());
             return "index";
         }
@@ -54,9 +55,17 @@ public class RuleController {
         ASTNode astNode = astParserService.createAST(ruleString);
         astService.createRule(ruleString);
 
-        model.addAttribute("successMessage", "Rule created successfully!");
+        model.addAttribute("successMessage", "Rule Created Successfully!");
         model.addAttribute("rules", astService.getAllRules());
         return "index";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteRule(@PathVariable("id") Long id, Model model , RedirectAttributes redirectAttributes) {
+        astService.deleteRuleById(id);
+        model.addAttribute("rules", astService.getAllRules());
+        redirectAttributes.addFlashAttribute("message", "Rule Deleted Successfully!");
+        return "redirect:/api/rule/index";
     }
 
 

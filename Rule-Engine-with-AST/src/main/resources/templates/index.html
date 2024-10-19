@@ -93,7 +93,7 @@
 </header>
 
 <main>
-    <h2>Create Rule</h2>
+    <h2>Create Rule:</h2>
 
     <!-- Display error or success message -->
     <div th:if="${errorMessage}" style="color: red;">
@@ -114,22 +114,38 @@
 
     </div>
 
+
+
     <!-- Rule List Display -->
     <div class="form-section">
         <h2>Existing Rules:</h2>
+        <!-- Success Message Section -->
+        <div th:if="${message}" class="success-message" style="color: green;">
+            <p th:text="${message}"></p>
+        </div>
         <div id="ruleList" th:each="rule : ${rules}">
-            <div class="rule-item">
-                <strong>Rule:</strong> <span th:text="${rule}"></span>
+            <div class="rule-item" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>Rule:</strong> <span th:text="${rule.ruleString}"></span>
+                </div>
+
+                <!-- Delete Button Form -->
+                <form th:action="@{/api/rule/delete/{id}(id=${rule.id})}" method="post" style="margin-left: 10px;">
+                    <button type="submit" class="delete-button" style="color: white; background-color: red; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
+                        Delete
+                    </button>
+                </form>
             </div>
         </div>
     </div>
+
 
 
     <!-- Evaluate Rule Form -->
     <div class="form-section">
         <h2>Evaluate Rule with User Data:</h2>
 
-        <form th:action="@{/api/rule/evaluate}" method="post">
+        <form th:action="@{/api/rule/evaluate}" method="post" onsubmit="return showAlert(event);">
             <label for="ageInput">Age:</label>
             <input type="number" id="ageInput" name="age" placeholder="Enter age" required />
 
@@ -144,11 +160,93 @@
 
             <button type="submit">Evaluate Rule</button>
         </form>
+    </div>
 
-        <div id="evaluationResult" th:if="${evaluationResult}">
-            <span th:text="${evaluationResult}"></span>
+    <!-- Modal for Evaluation Result -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalMessage"></p>
         </div>
     </div>
+
+    <script>
+        function showAlert(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get the form element
+            const form = event.target;
+
+            // Create a FormData object to gather the form data
+            const formData = new FormData(form);
+
+            // Send the data using fetch API
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(result => {
+                // Set modal content
+                document.getElementById("modalTitle").innerText = "Evaluation Result";
+                document.getElementById("modalMessage").innerText = result.includes("Eligible") ? "You are Eligible." : "You are Not Eligible.";
+                // Show modal
+                document.getElementById("resultModal").style.display = "block";
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+            return false; // Prevent default form submission
+        }
+
+        function closeModal() {
+            document.getElementById("resultModal").style.display = "none";
+        }
+    </script>
+
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 500px;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+
 
 </main>
 </body>
