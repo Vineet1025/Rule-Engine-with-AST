@@ -95,6 +95,15 @@
 <main>
     <h2>Create Rule</h2>
 
+    <!-- Display error or success message -->
+    <div th:if="${errorMessage}" style="color: red;">
+        <p th:text="${errorMessage}"></p>
+    </div>
+
+    <div th:if="${successMessage}" style="color: green;">
+        <p th:text="${successMessage}"></p>
+    </div>
+
     <!-- Create Rule Form -->
     <div class="form-section">
         <form th:action="@{/api/rule/create}" method="post">

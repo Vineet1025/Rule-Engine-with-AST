@@ -1,10 +1,10 @@
 package com.ruleEngineWithAST.model;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Rule {
@@ -13,6 +13,7 @@ public class Rule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Rule cannot be empty")
     private String ruleString;
 
     // Getters and Setters
