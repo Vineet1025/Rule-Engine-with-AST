@@ -9,7 +9,6 @@ public class UserData {
     private int salary;
     private int experience;
 
-    // Constructors
     public UserData(int age, String department, int salary, int experience) {
         this.age = age;
         this.department = department;
@@ -17,7 +16,6 @@ public class UserData {
         this.experience = experience;
     }
 
-    // Getters and Setters
     public int getAge() {
         return age;
     }

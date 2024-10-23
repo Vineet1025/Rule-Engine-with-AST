@@ -95,7 +95,6 @@
 <main>
     <h2>Create Rule:</h2>
 
-    <!-- Display error or success message -->
     <div th:if="${errorMessage}" style="color: red;">
         <p th:text="${errorMessage}"></p>
     </div>
@@ -104,7 +103,6 @@
         <p th:text="${successMessage}"></p>
     </div>
 
-    <!-- Create Rule Form -->
     <div class="form-section">
         <form th:action="@{/api/rule/create}" method="post">
             <label for="ruleInput">Enter Rule:</label>
@@ -116,7 +114,6 @@
 
 
 
-    <!-- Rule List Display -->
     <div class="form-section">
         <h2>Existing Rules:</h2>
         <!-- Success Message Section -->
@@ -129,7 +126,6 @@
                     <strong>Rule:</strong> <span th:text="${rule.ruleString}"></span>
                 </div>
 
-                <!-- Delete Button Form -->
                 <form th:action="@{/api/rule/delete/{id}(id=${rule.id})}" method="post" style="margin-left: 10px;">
                     <button type="submit" class="delete-button" style="color: white; background-color: red; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">
                         Delete
@@ -140,8 +136,26 @@
     </div>
 
 
+    <form method="POST" action="/api/rule/combineRules">
+        <div>
+            <h2>Select Rules to Combine:</h2>
+            <div th:if="${combinemessage}">
+                <p th:text="${combinemessage}" style="color: green;"></p>
+            </div>
 
-    <!-- Evaluate Rule Form -->
+            <ul>
+                <li th:each="rule : ${rules}">
+                    <input type="checkbox" name="ruleIds" th:value="${rule.id}" />
+                    <label th:text="${rule.ruleString}"></label>
+                </li>
+            </ul>
+        </div>
+        <button type="submit">Combine Rules</button>
+    </form>
+
+
+
+
     <div class="form-section">
         <h2>Evaluate Rule with User Data:</h2>
 
@@ -162,49 +176,29 @@
         </form>
     </div>
 
-    <!-- Modal for Evaluation Result -->
-    <div id="resultModal" class="modal">
+
+    <div id="resultModal" class="modal" th:if="${evaluationResult}">
         <div class="modal-content">
             <span class="close-button" onclick="closeModal()">&times;</span>
-            <h2 id="modalTitle"></h2>
-            <p id="modalMessage"></p>
+            <h2>Evaluation Result</h2>
+            <p th:text="${evaluationResult}"></p>
         </div>
     </div>
 
     <script>
-        function showAlert(event) {
-            event.preventDefault(); // Prevent the default form submission
-
-            // Get the form element
-            const form = event.target;
-
-            // Create a FormData object to gather the form data
-            const formData = new FormData(form);
-
-            // Send the data using fetch API
-            fetch(form.action, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(result => {
-                // Set modal content
-                document.getElementById("modalTitle").innerText = "Evaluation Result";
-                document.getElementById("modalMessage").innerText = result.includes("Eligible") ? "You are Eligible." : "You are Not Eligible.";
-                // Show modal
-                document.getElementById("resultModal").style.display = "block";
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-
-            return false; // Prevent default form submission
-        }
+        // Show modal if evaluationResult is available
+        document.addEventListener("DOMContentLoaded", function () {
+            const resultModal = document.getElementById("resultModal");
+            if (resultModal) {
+                resultModal.style.display = "block";
+            }
+        });
 
         function closeModal() {
             document.getElementById("resultModal").style.display = "none";
         }
     </script>
+
 
     <style>
         /* Modal Styles */

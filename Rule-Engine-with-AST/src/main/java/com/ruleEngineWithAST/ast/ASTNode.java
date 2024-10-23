@@ -14,8 +14,6 @@ public class ASTNode {
         this.right = right;
         this.value = value;
     }
-
-    // Getters and setters
     public String getType() { return type; }
     public ASTNode getLeft() { return left; }
     public ASTNode getRight() { return right; }

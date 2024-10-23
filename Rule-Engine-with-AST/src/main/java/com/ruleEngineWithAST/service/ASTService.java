@@ -1,5 +1,6 @@
 package com.ruleEngineWithAST.service;
 
+import com.ruleEngineWithAST.ast.ASTNode;
 import com.ruleEngineWithAST.model.Rule;
 import com.ruleEngineWithAST.model.UserData;
 import com.ruleEngineWithAST.repository.RuleRepository;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Stack;
 
 @Service
 public class ASTService {
@@ -40,6 +42,46 @@ public class ASTService {
         ruleRepository.deleteById(id);
     }
 
+
+    public ASTNode combineRules(List<Long> ruleIds) {
+        // Fetch the selected rules
+        List<Rule> selectedRules = ruleRepository.findAllById(ruleIds);
+
+        // Initialize a stack for combining the rules
+        Stack<ASTNode> astNodes = new Stack<>();
+        StringBuilder combinedRuleString = new StringBuilder();
+
+        for (Rule rule : selectedRules) {
+            ASTNode ruleAST = astParserService.createAST(rule.getRuleString());
+            astNodes.push(ruleAST);
+
+            if (combinedRuleString.length() > 0) {
+                combinedRuleString.append(" OR ");
+            }
+            combinedRuleString.append(rule.getRuleString());
+        }
+
+
+        ASTNode combinedAST = null;
+        while (astNodes.size() > 1) {
+            ASTNode left = astNodes.pop();
+            ASTNode right = astNodes.pop();
+            ASTNode orNode = new ASTNode("operator", left, right, "OR");
+            astNodes.push(orNode);
+        }
+
+
+        if (!astNodes.isEmpty()) {
+            combinedAST = astNodes.pop();
+        }
+
+        Rule combinedRule = new Rule();
+        combinedRule.setRuleString(combinedRuleString.toString());
+        ruleRepository.save(combinedRule);
+
+        return combinedAST;
+    }
+
     public boolean evaluateRule(int age, String department, int salary, int experience) {
         List<Rule> rules = getAllRules();
         UserData userData = new UserData(age, department, salary, experience);
@@ -51,6 +93,7 @@ public class ASTService {
                 logger.info("Evaluating rule: {} | Result: {}", rule.getRuleString(), isEligible);
                 if (!isEligible) {
                     allEligible = false;
+                    break;
                 }
             } catch (Exception e) {
                 logger.error("Error evaluating rule '{}': {}", rule.getRuleString(), e.getMessage());
@@ -60,6 +103,7 @@ public class ASTService {
 
         return allEligible;
     }
+
 
 
 }

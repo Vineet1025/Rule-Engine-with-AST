@@ -16,7 +16,6 @@ public class Rule {
     @NotBlank(message = "Rule cannot be empty")
     private String ruleString;
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }

@@ -11,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/api/rule")
 public class RuleController {
@@ -31,7 +33,6 @@ public class RuleController {
     @PostMapping("/create")
     public String createRule(@RequestParam("rule") String ruleString, Model model) {
 
-        // Validate the rule format
         if (ruleString.isEmpty()) {
             model.addAttribute("errorMessage", "Rule Cannot Be Empty!");
             model.addAttribute("rules", astService.getAllRules());
@@ -44,14 +45,14 @@ public class RuleController {
             return "index";
         }
 
-        // Check if rule already exists
+
         if (ruleValidationService.ruleExists(ruleString)) {
             model.addAttribute("errorMessage", "Rule Already Exists!");
             model.addAttribute("rules", astService.getAllRules());
             return "index";
         }
 
-        // If valid, create the AST and save the rule
+
         ASTNode astNode = astParserService.createAST(ruleString);
         astService.createRule(ruleString);
 
@@ -65,6 +66,19 @@ public class RuleController {
         astService.deleteRuleById(id);
         model.addAttribute("rules", astService.getAllRules());
         redirectAttributes.addFlashAttribute("message", "Rule Deleted Successfully!");
+        return "redirect:/api/rule/index";
+    }
+
+    @PostMapping("/combineRules")
+    public String combineRules(@RequestParam List<Long> ruleIds, Model model, RedirectAttributes redirectAttributes) {
+
+        ASTNode combinedAST = astService.combineRules(ruleIds);
+
+
+        model.addAttribute("combinedAST", combinedAST);
+        redirectAttributes.addFlashAttribute("combinemessage", "Rule Combined Successfully!");
+
+
         return "redirect:/api/rule/index";
     }
 

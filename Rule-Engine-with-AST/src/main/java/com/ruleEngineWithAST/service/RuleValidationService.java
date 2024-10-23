@@ -13,7 +13,6 @@ public class RuleValidationService {
     @Autowired
     private RuleRepository ruleRepository;
 
-    // Check if the rule already exists
     public boolean ruleExists(String ruleString) {
         List<Rule> existingRules = ruleRepository.findAll();
         for (Rule rule : existingRules) {
@@ -24,7 +23,6 @@ public class RuleValidationService {
         return false;
     }
 
-    // Validate that rule starts with '(' and ends with ')'
     public boolean isValidRuleFormat(String ruleString) {
         return ruleString.startsWith("(") && ruleString.endsWith(")");
     }
