@@ -21,6 +21,7 @@
 - [Deployment](#deployment)
 - [Usage](#eyes-usage)
 - [Contributing](#wave-contributing)
+- [License](#warning-license)
 - [Contact](#handshake-contact)
 - [Acknowledgements](#gem-acknowledgements)
 
@@ -152,6 +153,10 @@ The application has been deployed on **AWS EC2**, allowing for easy access and m
 
 Contributions are welcome! Please feel free to submit issues or pull requests.
 
+<!-- License -->
+## :warning: License
+
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/Vineet1025/Rule-Engine-with-AST/blob/master/LICENSE.md) file for details.
 
 <!-- Contact -->
 ## :handshake: Contact
